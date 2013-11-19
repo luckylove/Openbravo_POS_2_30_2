@@ -85,11 +85,12 @@ public class JCatalog extends JPanel implements ListSelectionListener, CatalogSe
     }
     
     public void showCatalogPanel(String id) {
-           
-        if (id == null) {
-            showRootCategoriesPanel();
-        } else {            
-            showProductPanel(id);
+        if (!isSearch) {
+            if (id == null) {
+                showRootCategoriesPanel();
+            } else {
+                showProductPanel(id);
+            }
         }
     }
     
@@ -172,11 +173,45 @@ public class JCatalog extends JPanel implements ListSelectionListener, CatalogSe
             }
             ((ActionListener) l[i]).actionPerformed(e);	       
         }
-    }   
+    }
+
+    private JCatalogTab searchTab = null;
+    private String searchKey = "_search_";
+    private boolean isSearch ;
+
+    public void searchProducts(String query) {
+
+        try {
+            isSearch = true;
+            // Load categories panel if not exists
+            if (searchTab == null) {
+                searchTab = new JCatalogTab();
+                searchTab.applyComponentOrientation(getComponentOrientation());
+                m_jProducts.add(searchTab, searchKey);
+                m_categoriesset.add(searchKey);
+            }
+            searchTab.removeAllProduct();
+            searchTab.validate();
+            searchTab.setVisible(false);
+            // Add products
+            java.util.List<ProductInfoExt> products = m_dlSales.searchProductCatalog(query);
+            for (ProductInfoExt prod : products) {
+                searchTab.addButton(new ImageIcon(tnbbutton.getThumbNailText(prod.getImage(), getProductLabel(prod))), new SelectedAction(prod));
+            }
+            //
+            // Show categories panel
+            CardLayout cl = (CardLayout) (m_jProducts.getLayout());
+            cl.show(m_jProducts, searchKey);
+            m_jProducts.validate();
+        } catch (BasicException e) {
+            JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.notactive"), e));
+        }
+    }
     
     private void selectCategoryPanel(String catid) {
 
         try {
+            isSearch = false;
             // Load categories panel if not exists
             if (!m_categoriesset.contains(catid)) {
                 
@@ -196,7 +231,6 @@ public class JCatalog extends JPanel implements ListSelectionListener, CatalogSe
                 java.util.List<ProductInfoExt> products = m_dlSales.getProductCatalog(catid);
                 for (ProductInfoExt prod : products) {
                     jcurrTab.addButton(new ImageIcon(tnbbutton.getThumbNailText(prod.getImage(), getProductLabel(prod))), new SelectedAction(prod));
-                    //jcurrTab.addButton(new ImageIcon(tnbbutton.getThumbNailText(prod.getImage(), getProductLabel(prod))), new SelectedAction(prod));
                 }
             }
             
@@ -221,7 +255,7 @@ public class JCatalog extends JPanel implements ListSelectionListener, CatalogSe
             return product.getName();
         }
     }
-    
+
     private void selectIndicatorPanel(Icon icon, String label) {
         
         m_lblIndicator.setText(label);

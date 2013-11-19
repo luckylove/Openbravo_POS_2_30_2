@@ -21,6 +21,8 @@ package com.openbravo.pos.sales;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Date;
 
@@ -1392,6 +1394,14 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         m_jPanTotals.add(m_jLblTotalEuros1, gridBagConstraints);
 
+        JLabel searchLa = new JLabel("Tìm kiếm");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
+        m_jPanTotals.add(searchLa, gridBagConstraints);
+
         JTextField searchProds = new JTextField();
         searchProds.setPreferredSize(new java.awt.Dimension(150, 25));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -1401,6 +1411,13 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         m_jPanTotals.add(searchProds, gridBagConstraints);
 
+        final JTextField temSrc = searchProds;
+        searchProds.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchProds(temSrc.getText());
+            }
+        });
 
 
         m_jSubtotalEuros.setBackground(java.awt.Color.white);
@@ -1569,6 +1586,11 @@ public abstract class JPanelTicket extends JPanel implements JPanelView, BeanFac
 
         add(m_jPanContainer, "ticket");
     }// </editor-fold>//GEN-END:initComponents
+
+
+    public void searchProds(String query){
+
+    }
 
     private void m_jbtnScaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_m_jbtnScaleActionPerformed
 

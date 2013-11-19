@@ -108,4 +108,9 @@ public class JPanelTicketSales extends JPanelTicket {
         // precondicion: prod != null
         super.incProduct(dPor, prod);
     }
+
+    @Override
+    public void searchProds(String query) {
+        ((JCatalog)m_cat).searchProducts(query);
+    }
 }

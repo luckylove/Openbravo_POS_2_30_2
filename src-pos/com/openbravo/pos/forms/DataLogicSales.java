@@ -145,6 +145,16 @@ public class DataLogicSales extends BeanFactoryDataSingle {
             , SerializerWriteString.INSTANCE
             , ProductInfoExt.getSerializerRead()).list(category);
     }
+
+    public List<ProductInfoExt> searchProductCatalog(String query) throws BasicException  {
+        return new PreparedSentence(s
+                , "SELECT P.ID, P.REFERENCE, P.CODE, P.NAME, P.ISCOM, P.ISSCALE, P.PRICEBUY, P.PRICESELL, P.TAXCAT, P.CATEGORY, P.ATTRIBUTESET_ID, P.IMAGE, P.ATTRIBUTES " +
+                "FROM PRODUCTS P WHERE P.NAME LIKE CONCAT('%', ? ,'%') " +
+                "ORDER BY P.NAME"
+                , SerializerWriteString.INSTANCE
+                , ProductInfoExt.getSerializerRead()).list(query);
+    }
+
     public List<ProductInfoExt> getProductComments(String id) throws BasicException {
         return new PreparedSentence(s
             , "SELECT P.ID, P.REFERENCE, P.CODE, P.NAME, P.ISCOM, P.ISSCALE, P.PRICEBUY, P.PRICESELL, P.TAXCAT, P.CATEGORY, P.ATTRIBUTESET_ID, P.IMAGE, P.ATTRIBUTES " +

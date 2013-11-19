@@ -63,6 +63,10 @@ public class JCatalogTab extends javax.swing.JPanel {
         btn.addActionListener(al);
         flowpanel.add(btn);        
     }
+
+    public void removeAllProduct(){
+        flowpanel.removeAll();
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
