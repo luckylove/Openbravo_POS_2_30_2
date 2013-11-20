@@ -64,8 +64,13 @@ public class JCatalogTab extends javax.swing.JPanel {
         flowpanel.add(btn);        
     }
 
+    public void addPanel(JPanel panel) {
+        flowpanel.add(panel);
+    }
+
     public void removeAllProduct(){
         flowpanel.removeAll();
+        flowpanel.revalidate();
     }
     
     /** This method is called from within the constructor to

@@ -191,7 +191,7 @@ public class JCatalog extends JPanel implements ListSelectionListener, CatalogSe
                 m_categoriesset.add(searchKey);
             }
             searchTab.removeAllProduct();
-            searchTab.validate();
+            searchTab.revalidate();
             searchTab.setVisible(false);
             // Add products
             java.util.List<ProductInfoExt> products = m_dlSales.searchProductCatalog(query);
@@ -202,7 +202,7 @@ public class JCatalog extends JPanel implements ListSelectionListener, CatalogSe
             // Show categories panel
             CardLayout cl = (CardLayout) (m_jProducts.getLayout());
             cl.show(m_jProducts, searchKey);
-            m_jProducts.validate();
+            //m_jProducts.revalidate();
         } catch (BasicException e) {
             JMessageDialog.showMessage(this, new MessageInf(MessageInf.SGN_WARNING, AppLocal.getIntString("message.notactive"), e));
         }

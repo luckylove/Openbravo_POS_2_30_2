@@ -48,6 +48,7 @@ public class WebcamQRCode extends JFrame implements ActionListener {
     private JTextField quantity = null;
     private JButton done = null;
     private boolean runJob = false;
+    private boolean tempPause = false;
 
     private JButton m_webcam;
 
@@ -142,22 +143,25 @@ public class WebcamQRCode extends JFrame implements ActionListener {
     }
 
     private void resetValue(){
+        tempPause = false;
+        runJob = true;
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 setVisible(true);
-                runJob = true;
                 textarea.setText("");
                 categoryText.setText("");
                 barCodeText.setText("");
                 quantity.setText("");
                 done.setEnabled(false);
                 productInfoExt = null;
+
             }
         });
     }
 
     public void runJob() {
+        long testCnt = 0;
         resetValue();
         m_webcam.setEnabled(false);
         panel.start();
@@ -171,12 +175,12 @@ public class WebcamQRCode extends JFrame implements ActionListener {
             Result result = null;
             BufferedImage image = null;
 
-            if (webcam.isOpen()) {
+            if (webcam.isOpen() && !tempPause) {
 
                 if ((image = webcam.getImage()) == null) {
                     continue;
                 }
-
+                System.out.println("web get image " + ++testCnt);
                 LuminanceSource source = new BufferedImageLuminanceSource(image);
                 BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
@@ -185,9 +189,9 @@ public class WebcamQRCode extends JFrame implements ActionListener {
                 } catch (NotFoundException e) {
                 }
             }
-            //if (result != null) {
-                //String rsString = result.getText();
-                String rsString = "10000002";
+            if (result != null) {
+                String rsString = result.getText();
+                //String rsString = "10000002";
                 //got result
                 barCodeText.setText(rsString);
                 //query product
@@ -195,10 +199,11 @@ public class WebcamQRCode extends JFrame implements ActionListener {
                     productInfoExt = m_dlSales.getProductInfoandCatByCode(rsString);
                     final ProductInfoExtCat product = this.productInfoExt;
                     if (product != null) {
+                        System.out.println("found product " + productInfoExt.getName());
                         //stop get image from camera
-                        runJob = false;
                         //StringUtils.prinOut(product);
                         //update info to panel
+                        tempPause = true;
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
@@ -215,9 +220,7 @@ public class WebcamQRCode extends JFrame implements ActionListener {
                 } catch (BasicException e) {
                     e.printStackTrace();
                 }
-
-
-            //}
+            }
 
         } while (runJob);
     }
