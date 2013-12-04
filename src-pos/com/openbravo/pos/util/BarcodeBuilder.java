@@ -37,6 +37,7 @@ public class BarcodeBuilder {
     private BufferedImage mainImage;
     private java.util.List<BarCodeItem> products;
     private Graphics graphics;
+    private File barcodeFolder;
     public BarcodeBuilder() {
     }
 
@@ -46,6 +47,8 @@ public class BarcodeBuilder {
         if (products.size() <= 0) {
             return this;
         }
+        barcodeFolder = new File("C:\\barcode");
+        barcodeFolder.mkdir();
         mainImage = createMainImage();
         graphics = mainImage.createGraphics();
         startX = 10;
@@ -59,7 +62,7 @@ public class BarcodeBuilder {
         }
         if (!isSave) {
             graphics.dispose();
-            writeImage("E:\\out" + fileCnt++ + ".jpg");
+            writeImage(fileCnt++ + ".jpg");
         }
         return this;
     }
@@ -68,10 +71,10 @@ public class BarcodeBuilder {
         int loop = p.getSizeQ();
         System.out.println("xuat " + p.getSource().getName() + " size: " + p.getSizeQ());
         for (int i =1 ; i <=loop; i++) {
-            Image thumbNail = getThumbNailText(getThumbNail(p.getSource().getImage()), p.getSource().getName() + currentIndex, p.getSource().getCode());
+            Image thumbNail = getThumbNailText(getThumbNail(p.getSource().getImage()), p.getSource().getName(), p.getSource().getCode());
             graphics.drawImage(thumbNail, startX, startY, null);
             System.out.println(startX + ":" +startY + " : " + currentIndex);
-            if (i % rowItem == 0) {
+            if (currentIndex % rowItem == 0) {
                 startY += 175;
                 startX = 10;
             } else {
@@ -84,7 +87,7 @@ public class BarcodeBuilder {
                 System.out.println(">>>>>>>>>>>>>>> reset: " + currentIndex + " fileCnt: " + fileCnt);
                 //write first image
                 isSave = true;
-                writeImage("E:\\out" + fileCnt++ + ".jpg");
+                writeImage(fileCnt++ + ".jpg");
                 //reset
                 graphics.dispose();
                 mainImage = createMainImage();
@@ -98,7 +101,7 @@ public class BarcodeBuilder {
 
     public void writeImage(String fileName) {
         try {
-            ImageIO.write(mainImage, "jpg", new File(fileName));
+            ImageIO.write(mainImage, "jpg", new File(barcodeFolder +"\\"+ fileName));
         } catch (IOException e) {
             e.printStackTrace();
         }

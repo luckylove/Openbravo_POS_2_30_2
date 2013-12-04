@@ -19,12 +19,15 @@
 
 package com.openbravo.pos.forms;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -60,9 +63,40 @@ public class AppConfig implements AppProperties {
     }
     
     private File getDefaultConfig() {
+        try {
+            String path = getConfigFile(null, AppLocal.APP_ID + ".properties", 0);
+            return new File(path);
+        } catch (Exception e) {
+        }
         return new File(new File(System.getProperty("user.home")), AppLocal.APP_ID + ".properties");
     }
-    
+
+    public String getConfigFile(String rootPath, String fileName, int level) throws Exception {
+        if (level < 2) {
+            String path = rootPath;
+            if (path == null) {
+                path = AppConfig.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+            }
+            logger.info(">>>>>>>>>>>>>>> current path : " + level + " : " + path);
+            path = new File(URLDecoder.decode(path, "UTF-8")).getAbsolutePath();
+            if (StringUtils.isNotEmpty(path)) {
+                int i = path.lastIndexOf(File.separator);
+                if (i > 0) {
+                    path = path.substring(0, i);
+                    String npath = path + File.separator + fileName;
+                    File f = new File(npath);
+                    if (f.exists()) {
+                        return f.getAbsolutePath();
+                    } else {
+                        //try 1 uplevel
+                        return getConfigFile(path, fileName, ++level);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public String getProperty(String sKey) {
         return m_propsconfig.getProperty(sKey);
     }

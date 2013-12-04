@@ -264,6 +264,16 @@ public class ProductsEditor extends JPanel implements EditorRecord {
         
         calculateMargin();
         calculatePriceSellTax();
+        String qrCode = generateOrderNumber();
+        m_jCode.setText(qrCode);
+        //generate qr code
+        ByteArrayOutputStream outputStream = QRCode.from(qrCode).to(ImageType.JPG).stream();
+        try {
+            BufferedImage imag = ImageIO.read(new ByteArrayInputStream(outputStream.toByteArray()));
+            m_jImage.setImage(imag);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
    }
     public void writeValueDelete(Object value) {
         

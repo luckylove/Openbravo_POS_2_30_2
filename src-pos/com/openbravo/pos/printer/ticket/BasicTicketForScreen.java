@@ -24,8 +24,8 @@ import java.awt.geom.AffineTransform;
 
 public class BasicTicketForScreen extends BasicTicket {
 
-    private static Font BASEFONT = new Font("Monospaced", Font.PLAIN, 12).deriveFont(AffineTransform.getScaleInstance(1.0, 1.40));
-    private static int FONTHEIGHT = 20;
+    private static Font BASEFONT = new Font("Monospaced", Font.PLAIN, 11).deriveFont(AffineTransform.getScaleInstance(1.0, 1.40));
+    private static int FONTHEIGHT = 18;
     private static double IMAGE_SCALE = 1.0;
 
     @Override
